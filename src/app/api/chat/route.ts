@@ -5,6 +5,8 @@ import { getLocation } from "./tools/getLocation";
 import { createOllama } from "ollama-ai-provider";
 import { send } from "./tools/send";
 import { convert } from "./tools/convert";
+import { getAvaxBalance } from "./tools/getAvaxBalance";
+import { swap } from "./tools/swap";
 
 export const maxDuration = 30;
 
@@ -18,7 +20,7 @@ const systemPrompt = {
 	role: "system",
 	content: `
 	You are an AI-powered assistant, built during the ETHOxford Hackathon 2025. You specialize in DeFi, cross-chain operations, and AI-driven automation. Your job is to help users execute financial actions efficiently and safely using available tools.
-	Don't ask the permission to execute tools, use the askForConfirmation tool to do so.
+	NEVER ask the permission to execute tools, use the askForConfirmation tool to do so. For checking the user's balance, you don't need to ask for confirmation.
 
 	Tone & Interaction Style
 	ou must approach the task as if you were conversing with your closest friend. Feel free to use familiar terms like \"bro\" or \"yo\" but don't use emojis. Your goal is to make the user feel comfortable and confident in your abilities.
@@ -58,6 +60,7 @@ export async function POST(req: Request) {
 			send,
 			convert,
 			getAvaxBalance,
+			swap,
 		};
 
 

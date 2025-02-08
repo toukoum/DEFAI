@@ -12,7 +12,7 @@ function copyToClipboard(text: string) {
 export default function CardList() {
   const cards = [
     "How much AVAX do I have left?",
-    "Show my liquidity positions.",
+    "send 0.1 avax to 0x578dC842Bb55bb8b73472d69Fa2097ed1C19c46a",
     "Convert all my USDC to AVAX and send it to 0x9c2...18C.",
     "Show me the price of AVAX in USD.",
   ];
@@ -20,7 +20,7 @@ export default function CardList() {
   return (
     <div className="w-full text-avax grid grid-cols-2 gap-4 mt-4">
       {cards.map((text, index) => (
-        <Card key={index} className="bg-background border-none border-t shadow-lg shadow-red-950">
+        <Card key={index} className="bg-background border">
           <CardContent className="p-4 text-sm flex justify-between items-center">
             <p className="font-medium text-muted-foreground">{text}</p>
             <button
