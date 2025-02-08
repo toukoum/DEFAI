@@ -106,7 +106,7 @@ export default function LandingPage() {
 				<div className="grid grid-cols-2 pt-12 gap-4 w-full mx-auto">
 					<Button variant="outline" disabled={true}>SEND</Button>
 					<Button variant="outline" disabled={true}>SWAP</Button>
-					<Button variant="outline" disabled={true}>CONVERT</Button>
+					<Button variant="outline" disabled={true}>STAKE</Button>
 					<Button variant="outline" disabled={true}>BRIDGE</Button>
 					<Button variant="outline" className="col-span-2" disabled={true}>AND MORE...</Button>
 				</div>

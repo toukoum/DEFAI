@@ -56,11 +56,11 @@ export default function ChatBottombar({
 	}, [inputRef]);
 
 	return (
-		<div className="px-4 flex justify-between w-full items-center relative ">
+		<div className="flex justify-between w-full items-center relative ">
 			<AnimatePresence initial={false}>
 				<form
 					onSubmit={handleSubmit}
-					className={`w-full items-center flex flex-col bg-accent dark:bg-card rounded-lg ${!isMiddle ? ' shadow-white border-t' : ''} `}
+					className={`w-full items-center flex flex-col bg-accent rounded-lg ${!isMiddle ? ' shadow-white border-t' : 'border w-full px-0'} `}
 				>
 					<ChatInput
 						value={input}

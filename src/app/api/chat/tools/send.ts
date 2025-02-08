@@ -6,15 +6,15 @@ import { getAccount, writeContract } from "wagmi/actions";
 // Avalanche Fuji Testnet Chain ID
 //const AVALANCHE_FUJI_CHAIN_ID = 43113;
 
-export const transfer = tool({
-	description: "Transfer AVAX from your connected wallet to another address on the Avalanche Fuji testnet. ASK FOR CONFIRMATION BEFORE USING THIS TOOL.",
+export const send = tool({
+	description: "send AVAX from your connected wallet to another address on the Avalanche Fuji testnet. ASK FOR CONFIRMATION BEFORE USING THIS TOOL.",
 	parameters: z.object({
 		to: z.string().min(42).max(42).describe("Recipient AVAX address."),
 		amount: z.number().positive().describe("Amount of AVAX to send."),
 	}),
 	execute: async ({ to, amount }) => {
 		try {
-			console.log("\n\n====>>>>>> Transfer AVAX to", to, "Amount:", amount);
+			console.log("\n\n====>>>>>> send AVAX to", to, "Amount:", amount);
 			// Check if wallet is connected
 			//const account = getAccount();
 			//if (!account.isConnected) {
@@ -32,7 +32,7 @@ export const transfer = tool({
 			//return `Transaction sent! Hash: ${tx.hash}`;
 			return `Transaction sent! Hash: 0x1234567890abcdef`;
 		} catch (error) {
-			console.error("Transfer error:", error);
+			console.error("send error:", error);
 			if (error instanceof Error) {
 				return `Transaction failed: ${error.message}`;
 			} else {

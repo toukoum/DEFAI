@@ -125,21 +125,21 @@ export default function Chat({ initialMessages, id }: ChatProps) {
 					<div className="w-full grid grid-cols-2 gap-4 mt-4">
 
 						{/* Example 1 */}
-						<Card>
+						<Card className="bg-background">
 							<CardContent className="p-4 text-sm text-foreground">
 								<p className="font-medium">Show my liquidity positions.</p>
 							</CardContent>
 						</Card>
 
 						{/* Example 2 */}
-						<Card>
+						<Card className="bg-background">
 							<CardContent className="p-4 text-sm text-foreground">
 								<p className="font-medium">How much AVAX do I have left?</p>
 							</CardContent>
 						</Card>
 
 						{/* Example 3 */}
-						<Card>
+						<Card className="bg-background">
 							<CardContent className="p-4 text-sm text-foreground">
 								<p className="font-medium">
 									Convert all my USDC to AVAX and send it to{" "}
@@ -150,7 +150,7 @@ export default function Chat({ initialMessages, id }: ChatProps) {
 							</CardContent>
 						</Card>
 
-						<Card>
+						<Card className="bg-background">
 							<CardContent className="p-4 text-sm text-foreground">
 								<p className="font-medium">
 									Show me the price of AVAX in USD.

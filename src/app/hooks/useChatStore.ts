@@ -10,7 +10,7 @@ interface ChatSession {
 interface State {
 	chats: Record<string, ChatSession>;
 	currentChatId: string | null;
-	userName: string | "Anonymous";
+	userName: string | "Elong Musk";
 	isLocal: boolean;
 }
 
@@ -29,7 +29,7 @@ const useChatStore = create<State & Actions>()(
 		(set, get) => ({
 			chats: {},
 			currentChatId: null,
-			userName: "Anonymous",
+			userName: "Elon Musk",
 			isLocal: false,
 
 			setUserName: (userName) => set({ userName }),
