@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+<h1 align="center">
+  Hackaton ETHOXFORD
+</h1>
 
-First, run the development server:
+# Requisites ⚙️
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+To use the web interface, these requisites must be met:
+
+1. Download [Ollama](https://ollama.com/download) and have it running. Or run it in a Docker container. Check the [docs](https://github.com/ollama/ollama) for instructions.
+2. Node.js (18+) and npm is required. [Download](https://nodejs.org/en/download)
+
+## Quick start 🚀
+
+**1. Clone the repository to a directory on your pc via command prompt:**
+
+```
+git clone https://github.com/toukoum/oxford/
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Open the folder:**
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+cd oxford
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**3. Rename the `.example.env` to `.env`:**
 
-## Learn More
+```
+mv .example.env .env
+```
 
-To learn more about Next.js, take a look at the following resources:
+**5. Install dependencies:**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**6. Start the development server:**
 
-## Deploy on Vercel
+```
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**5. Go to [localhost:3000](http://localhost:3000) and start chatting with your favourite model!**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Tech stack
+
+[NextJS](https://nextjs.org/) - React Framework for the Web
+
+[TailwindCSS](https://tailwindcss.com/) - Utility-first CSS framework
+
+[shadcn-ui](https://ui.shadcn.com/) - UI component built using Radix UI and Tailwind CSS
+
+[shadcn-chat](https://github.com/jakobhoeg/shadcn-chat) - Chat components for NextJS/React projects
+
+[Framer Motion](https://www.framer.com/motion/) - Motion/animation library for React
+
+[Lucide Icons](https://lucide.dev/) - Icon library
+
+[Vercel ai sdk](https://sdk.vercel.ai/) - AI/ML SDK for Vercel
