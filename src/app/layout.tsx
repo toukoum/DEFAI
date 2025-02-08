@@ -8,8 +8,13 @@ import { Web3Provider } from "@/providers/web3-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "OxFord",
+	title: "Defai",
 	description: "Our Hackathon project",
+	icons: {
+		icon: [
+			{ rel: "icon", url: "/black_logo.svg", type: "image/svg+xml" },
+		]
+	}
 };
 
 export const viewport = {

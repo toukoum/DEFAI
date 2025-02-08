@@ -55,9 +55,9 @@ export async function POST(req: Request) {
 
 		const tools = {
 			askForConfirmation,
-			getLocation,
 			send,
 			convert,
+			getAvaxBalance,
 		};
 
 

@@ -11,6 +11,8 @@ import ChatBottombar from "./chat-bottombar";
 import ChatList from "./chat-list";
 import ChatTopbar from "./chat-topbar";
 import { Card, CardContent } from "../ui/card";
+import CardList  from "./CardList";
+import { useAccount } from "wagmi";
 
 export interface ChatProps {
 	id: string;
@@ -50,9 +52,13 @@ export default function Chat({ initialMessages, id }: ChatProps) {
 			console.error(error.cause);
 		},
 		onToolCall: (tool) => {
-			console.log("Tool call", tool);
+			if (tool.toolCall.toolName == "getAvaxBalance") {
+				toast("Checking your AVAX balance...");
+				// here get the balance from the wallet
+			}
 		}
 	});
+	const { address } = useAccount();
 	const [loadingSubmit, setLoadingSubmit] = React.useState(false);
 	const saveMessages = useChatStore((state) => state.saveMessages);
 	const getMessagesById = useChatStore((state) => state.getMessagesById);
@@ -115,49 +121,13 @@ export default function Chat({ initialMessages, id }: ChatProps) {
 			{messages.length === 0 ? (
 				<div className="flex flex-col h-full w-full items-center gap-4 justify-center">
 
-					<h1 className="scale-x-[-1] text-[120px] font-bold">D</h1>
+					<h1 className="scale-x-[-1] text-[80px] -mb-6 font-bold">D</h1>
+					<h2 className="text-2xl mb-6">Defai</h2>
 
 
-					<p className="text-center text-base text-muted-foreground">
+					<p className="self-start pl-6 text-base text-foreground">
 						How can I help you today?
 					</p>
-
-					<div className="w-full grid grid-cols-2 gap-4 mt-4">
-
-						{/* Example 1 */}
-						<Card className="bg-background">
-							<CardContent className="p-4 text-sm text-foreground">
-								<p className="font-medium">Show my liquidity positions.</p>
-							</CardContent>
-						</Card>
-
-						{/* Example 2 */}
-						<Card className="bg-background">
-							<CardContent className="p-4 text-sm text-foreground">
-								<p className="font-medium">How much AVAX do I have left?</p>
-							</CardContent>
-						</Card>
-
-						{/* Example 3 */}
-						<Card className="bg-background">
-							<CardContent className="p-4 text-sm text-foreground">
-								<p className="font-medium">
-									Convert all my USDC to AVAX and send it to{" "}
-									<span className="text-muted-foreground">
-										0x9cFfB60b24D434DF8CC310A1BECA2cf4c297718C.
-									</span>
-								</p>
-							</CardContent>
-						</Card>
-
-						<Card className="bg-background">
-							<CardContent className="p-4 text-sm text-foreground">
-								<p className="font-medium">
-									Show me the price of AVAX in USD.
-								</p>
-							</CardContent>
-						</Card>
-					</div>
 
 					<ChatBottombar
 						input={input}
@@ -169,6 +139,11 @@ export default function Chat({ initialMessages, id }: ChatProps) {
 						isToolInProgress={isToolInProgress}
 						isMiddle={true}
 					/>
+					
+					<CardList />
+
+				
+
 				</div>
 			) : (
 				<>

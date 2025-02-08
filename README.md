@@ -1,6 +1,6 @@
 
 <h1 align="center">
-  Hackaton ETHOXFORD
+  Hackathon ETHOXFORD
 </h1>
 
 # Requisites ⚙️

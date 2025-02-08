@@ -122,7 +122,7 @@ export function ConfirmationDialog({
       <DialogTrigger asChild>
         <Button variant="outline">Open confirmation</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-md p-6">
+      <DialogContent forceMount className="max-w-md p-6">
         <DialogHeader>
           <DialogTitle className="mb-4">{actionLabels[actionType]}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>

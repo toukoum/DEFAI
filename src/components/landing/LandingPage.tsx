@@ -55,7 +55,7 @@ export default function LandingPage() {
 				</motion.h1>
 
 				<p className="font-normal text-lg text-muted-foreground tracking-normal mt-1 mb-8 max-w-xl mx-auto text-center">
-					Trade, swap, and manage assets with simple commands. <br /> AI-powered DeFi Agent for Avalanche
+					Trade, swap, and manage assets with natural language. <br /> AI-powered DeFi Agent for Avalanche
 				</p>
 
 				{/* Action Buttons */}
@@ -94,9 +94,8 @@ export default function LandingPage() {
 					</div>
 					<Textarea
 						autoComplete="off"
-						disabled={true}
 						name="message"
-						className="bg-accent resize-none px-4 py-3 text-sm placeholder:text-muted-foreground disabled:opacity-50 w-full rounded-md"
+						className="pointer-events-none shadow-2xl bg-accent resize-none text-avax text-bold text-xl px-4 py-3 placeholder:text-foreground disabled:opacity-50 w-full rounded-md"
 						placeholder="Swap 100 USDT to AVAX..."
 					/>
 				</div>

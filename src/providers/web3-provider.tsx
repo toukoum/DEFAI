@@ -7,13 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { mainnet, avalanche, avalancheFuji } from "wagmi/chains";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-
-const config = getDefaultConfig({
-  appName: "oxford",
-  projectId: "7a8f913d026858bae28fb603bc9b42ca",
-  chains: [avalanche, avalancheFuji, mainnet],
-  ssr: false,
-});
+import { config } from "./config";
 
 const queryClient = new QueryClient();
 

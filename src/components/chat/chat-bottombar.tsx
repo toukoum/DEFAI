@@ -60,7 +60,7 @@ export default function ChatBottombar({
 			<AnimatePresence initial={false}>
 				<form
 					onSubmit={handleSubmit}
-					className={`w-full items-center flex flex-col bg-accent rounded-lg ${!isMiddle ? ' shadow-white border-t' : 'border w-full px-0'} `}
+					className={`w-full items-center flex flex-col bg-accent rounded-lg ${!isMiddle ? ' shadow-white border-t' : 'shadow-2xl border-t w-full px-0'} `}
 				>
 					<ChatInput
 						value={input}
