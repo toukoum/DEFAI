@@ -16,6 +16,7 @@ import {
 	ChatBubbleMessage,
 } from "../ui/chat/chat-bubble";
 import { ConfirmationDialog } from "../ui/ConfirmationDialog";
+import {Address} from "viem";
 
 // shadcn Dialog imports
 import {
@@ -26,9 +27,27 @@ import {
 	DialogTitle,
 	DialogDescription,
 } from "@/components/ui/dialog";
-import { useAccount, useBalance, useSendTransaction, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useBalance, useSendTransaction, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import ToolExecutor from "./ToolExecutor";
-import { parseEther } from "viem";
+import { createPublicClient, http, parseEther, parseUnits } from "viem";
+import { abiApprouve } from "@/constants/abi";
+import { getTokenAvax } from "@/constants/tokenInfo";
+import {
+	ChainId,
+	Token,
+	TokenAmount,
+	Percent,
+} from "@traderjoe-xyz/sdk-core";
+import {
+	PairV2,
+	RouteV2,
+	TradeV2,
+	TradeOptions,
+	LB_ROUTER_V22_ADDRESS,
+	jsonAbis,
+} from "@traderjoe-xyz/sdk-v2";
+
+import { avalancheFuji } from "viem/chains";
 
 export type ChatMessageProps = {
 	message: Message;
@@ -91,6 +110,7 @@ function SendResultDialog({
 					<DialogDescription>A summary of what happened.</DialogDescription>
 				</DialogHeader>
 				<div className="mt-4 space-y-2 text-sm">
+					{/*ToDO*/}
 					<p><strong>Result:</strong> {result}</p>
 					{/* If result is a transaction hash, you can link to an explorer, e.g.: 
               <a href={`https://snowtrace.io/tx/${result}`} target="_blank" rel="noreferrer">
@@ -109,6 +129,7 @@ function SendResultDialog({
 }
 
 // The final card once the send is complete
+//TODO A AMELIORER
 function SendCompleteCard({ result }: { result: string }) {
 	const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -176,6 +197,8 @@ function ChatMessage({
 
 	const { data: dataSend, sendTransactionAsync } = useSendTransaction();
 
+	const { data: dataSwap, writeContractAsync } = useWriteContract();
+
 	const renderToolInvocations = () => {
 		if (!message.toolInvocations) return null;
 
@@ -222,6 +245,127 @@ function ChatMessage({
 					);
 				}
 
+				return (
+					<div key={toolCallId} className="mt-2">
+						<SendCompleteCard result={toolInvocation.result as string} />
+					</div>
+				);
+			}
+
+
+			if (toolName === "swap") {
+				// If the swap tool hasn't finished executing yet…
+				if (!("result" in toolInvocation)) {
+					return (
+						<ToolExecutor
+							key={toolCallId}
+							toolCallId={toolCallId}
+							addToolResult={addToolResult}
+							executeTool={async () => {
+								try {
+									// 1. Get the amount from the tool args.
+									const amount = toolInvocation.args.amount; // e.g. 100 (USDC)
+									const typedValue = amount.toString();
+
+									// 2. Set chain and token details.
+									const CHAIN_ID = 43113;
+									const router = LB_ROUTER_V22_ADDRESS[CHAIN_ID];
+									const inputToken = getTokenAvax("USDC", CHAIN_ID);
+									const outputToken = getTokenAvax("WAVAX", CHAIN_ID);
+									const typedValueParsed = parseUnits(typedValue, inputToken.decimals);
+									const amountIn = new TokenAmount(inputToken, typedValueParsed);
+									const BASES = [
+										getTokenAvax("WAVAX", CHAIN_ID),
+										getTokenAvax("USDC", CHAIN_ID),
+										getTokenAvax("USDT", CHAIN_ID),
+									];
+
+									// 3. Create token pairs and routes.
+									const allTokenPairs = PairV2.createAllTokenPairs(inputToken, outputToken, BASES);
+									const allPairs = PairV2.initPairs(allTokenPairs);
+									const allRoutes = RouteV2.createAllRoutes(allPairs, inputToken, outputToken);
+
+									if (!address) throw new Error("User address not found");
+
+									// 4. Create a public client (using viem) to wait for tx confirmation.
+									const publicClient = createPublicClient({
+										chain: avalancheFuji,
+										key: address,
+										transport: http(),
+									});
+
+									// 5. Approve USDC for the router.
+									const approvalTx = await writeContractAsync({
+										address: getTokenAvax("USDC", CHAIN_ID).address as Address,
+										abi: abiApprouve,
+										functionName: "approve",
+										args: [router, parseUnits(amount, getTokenAvax("USDC", CHAIN_ID).decimals)],
+									});
+									// Wait for the approval to be confirmed.
+									await publicClient.waitForTransactionReceipt({ hash: approvalTx });
+
+									// 6. Get trade routes for the swap.
+									const trades = await TradeV2.getTradesExactIn(
+										allRoutes,
+										amountIn,
+										outputToken,
+										false,
+										true,
+										publicClient,
+										CHAIN_ID
+									);
+									const validTrades = trades.filter((trade): trade is TradeV2 => trade !== undefined);
+									const bestTrade = TradeV2.chooseBestTrade(validTrades, true); // isExactIn = true
+									if (!bestTrade) throw new Error("No valid trade found");
+
+									// 7. Get fee details.
+									const { totalFeePct, feeAmountIn } = await bestTrade.getTradeFee();
+									const userSlippageTolerance = new Percent("200", "10000");
+									const swapOptions: TradeOptions = {
+										allowedSlippage: userSlippageTolerance,
+										ttl: 3600,
+										recipient: address,
+										feeOnTransfer: false,
+									};
+
+									// 8. Prepare swap call parameters.
+									const { methodName, args, value } = bestTrade.swapCallParameters(swapOptions);
+
+									// 9. Execute the swap.
+									const { LBRouterV22ABI } = jsonAbis;
+									const swapTx = await writeContractAsync({
+										address: router,
+										abi: LBRouterV22ABI,
+										functionName: methodName,
+										args: args,
+										account: address,
+									});
+									// Wait for swap tx confirmation.
+									await publicClient.waitForTransactionReceipt({ hash: swapTx });
+
+									// 10. Return all relevant info.
+									return `Swap executed successfully!
+												Transaction hash: ${swapTx}
+												Fee: ${feeAmountIn.toSignificant(6)} ${feeAmountIn.token.symbol} (Total fee: ${totalFeePct.toSignificant(6)}%)`;
+								} catch (error) {
+									console.error("Swap failed:", error);
+									return "Transaction cancelled.";
+								}
+							}}
+						/>
+					);
+				}
+
+				// If the swap tool result is "Transaction cancelled."
+				if (toolInvocation.result === "Transaction cancelled.") {
+					return (
+						<div key={toolCallId} className="mt-2">
+							<p>Transaction was cancelled.</p>
+						</div>
+					);
+				}
+
+				// Otherwise, display the final card with result details.
 				return (
 					<div key={toolCallId} className="mt-2">
 						<SendCompleteCard result={toolInvocation.result as string} />
@@ -278,11 +422,7 @@ function ChatMessage({
 				}
 
 				return (
-					<div key={toolCallId} className="mt-2">
-						<strong>Tool:</strong> {toolName}
-						<br />
-						<strong>Result:</strong> {toolInvocation.result}
-					</div>
+					<SendCompleteCard result={toolInvocation.result as string} />
 				);
 			}
 
