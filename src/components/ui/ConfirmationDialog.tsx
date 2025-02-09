@@ -191,6 +191,7 @@ export function ConfirmationDialog({
 				) : (
 					<div className="mt-4 space-y-2 divide-y divide-border">
 						{Object.entries(parameters).map(([key, value]) => {
+							if (!value) return null;
 							let displayValue = value;
 							if (typeof value === "string" && value.startsWith("0x")) {
 								displayValue = truncateAddress(value);

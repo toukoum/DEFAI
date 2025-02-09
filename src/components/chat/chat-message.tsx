@@ -153,6 +153,18 @@ function ChatMessage({
 				addToolResult({ toolCallId, result });
 			};
 
+			if (toolName === "convert") {
+				if (!("result" in toolInvocation)) {
+					return (<div key={toolCallId}>Tool executing issue</div>)
+				}
+
+				return (
+					<div key={toolCallId} className="mt-2">
+						<SendCompleteCard result={toolInvocation.result as string} action="Convertion" />
+					</div>
+				);
+			}
+
 			// send tool
 			if (toolName === "send") {
 				// si le résultat n'existe pas encore, c'est que le tool est en cours d'exécution
@@ -300,9 +312,15 @@ function ChatMessage({
 
 									// 10. Return all relevant info.
 									// return `Swap executed successfully!`;
-									return `Swap executed successfully!
-												Transaction hash: ${swapTx}
-												Fee: ${feeAmountIn.toSignificant(6)} ${feeAmountIn.token.symbol} (Total fee: ${totalFeePct.toSignificant(6)}%)`;
+									return JSON.stringify({
+										message: "Swap executed successfully!",
+										amount: `${amount} USDC`,
+										adress: address,
+										transactionHash: swapTx,
+										fee: `${feeAmountIn.toSignificant(6)} ${feeAmountIn.token.symbol}`,
+										totalFeePercentage: `${totalFeePct.toSignificant(6)}%`,
+										explorerLink: `https://testnet.snowtrace.io/tx/${swapTx}`
+									});
 								} catch (error) {
 									console.error("Swap failed:", error);
 									return "Transaction cancelled.";
@@ -338,11 +356,17 @@ function ChatMessage({
 			if (toolName === "askForConfirmation") {
 
 				const { actionType, message, destination, amount, tokenName } = toolInvocation.args;
+
+				const user_adress = address;
+
 				const parameters = {
 					destination,
+					user_adress,
 					amount,
 					tokenName,
 				};
+
+
 				if ("result" in toolInvocation) {
 					return (
 						<div key={toolCallId} className="mt-2">
@@ -391,7 +415,7 @@ function ChatMessage({
 				}
 
 				return (
-					<SendCompleteCard result={toolInvocation.result as string} action="Get Balance" />
+					<SendCompleteCard key={toolCallId} result={toolInvocation.result as string} action="Get Balance" />
 				);
 			}
 

@@ -72,7 +72,7 @@ export default function LandingPage() {
 							className="rounded-full"
 						>
 							Start
-							{isLoading && <Loader2 className="animate-spin ml-2 w-4 h-4" />}
+							{isLoading && <Loader2 className="animate-spin ml-2 w-4 h-4"/>}
 						</Button>
 					) : (
 						<ConnectButton chainStatus="icon" showBalance={false} label="Connect Wallet" />
@@ -106,30 +106,31 @@ export default function LandingPage() {
 				<div className="grid grid-cols-2 pt-12 gap-4 w-full mx-auto">
 					<Button variant="outline" disabled={true}>SEND</Button>
 					<Button variant="outline" disabled={true}>SWAP</Button>
-					<Button variant="outline" disabled={true}>STAKE</Button>
-					<Button variant="outline" disabled={true}>BRIDGE</Button>
+					<Button variant="outline" disabled={true}>SHOW BALANCE</Button>
+					<Button variant="outline" disabled={true}>CONVERT</Button>
 					<Button variant="outline" className="col-span-2" disabled={true}>AND MORE...</Button>
 				</div>
 			</LampContainer>
 
 			<div className="container items-center max-w-lg text-center flex flex-col w-full mt-24 mb-48">
-				<p className="relative -mb-2 z-20 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">Defai</p>
-				<p className="text-base text-foreground">Decentralized Finance Artificial Intelligence</p>
+				<p className="relative -mb-2 z-20 bg-gradient-to-b text-avax bg-clip-text py-8 text-4xl font-thin sm:text-7xl">Defai</p>
+				<p className="text-lg font-light text-foreground">
+					<span className="text-avax font-semibold">DE</span>centralized <span className="text-avax font-semibold">F</span>inance <span className="text-avax font-semibold">A</span>rtificial <span className="text-avax font-semibold">I</span>ntelligence
+				</p>
 			</div>
 
 
 			<div className="justify-center mb-36 container w-full px-24 items-center flex flex-col">
 				{/*<div className="w-full h-0.5 bg-accent my-8 z-40"></div>*/}
 				{/* We limit the width here for a cleaner, centered look */}
-				<Accordion type="single" collapsible className="w-full mx-auto space-y-2">
+				<Accordion type="single" collapsible className="w-full max-w-3xl mx-auto space-y-2">
 					<AccordionItem value="what">
 						<AccordionTrigger className="text-3xl font-medium">
 							What?
 						</AccordionTrigger>
 						<AccordionContent>
 							<p className="text-base text-muted-foreground mt-2">
-								We build AI agents that streamline <strong>DeFi operations and cross-chain interactions</strong>
-								via natural language interfaces on <strong>Avalanche</strong>. Instead of manually juggling
+								We build AI agents that streamline <strong>DeFi operations and cross-chain interactions</strong> via natural language interfaces on <strong>Avalanche</strong>. Instead of manually juggling
 								complex protocols, our agent helps you perform trades, swaps, and more with simple commands.
 							</p>
 						</AccordionContent>

@@ -38,9 +38,10 @@ const systemPrompt = {
 	Find the best execution paths to ensure seamless transfers.
 	Core Actions You Can Handle
 	Send (transfer assets)
+	Convertion (exchange assets)
 	Swap (exchange tokens)
-	Bridge (move assets between chains)
-	Stake (earn rewards by locking assets)
+	Bridge (move assets between chains) - not implemented yet
+	Stake (earn rewards by locking assets) - not implemented yet
 	`
 };
 

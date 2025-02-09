@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { SquareArrowOutUpRight } from "lucide-react";
 
 function SendResultDialog({
   open,
@@ -23,14 +24,14 @@ function SendResultDialog({
 	const formatValue = (value: string) => {
     if (typeof value === "string" && value.startsWith("http")) {
       return (
-        <a
-          href={value}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 hover:underline"
-        >
-          {value}
-        </a>
+       <Button 
+				onClick={() => window.open(value, "_blank")}
+				className="flex items-center text-blue-500 w-full my-2 hover:text-blue-500"
+				variant="ghost"
+			 >
+				See you transaction
+				<SquareArrowOutUpRight className="h-4 w-4 ml-2 text-card-foreground" color="#3B82F6" />
+			 </Button>
       );
     }
     return value;
@@ -45,7 +46,7 @@ function SendResultDialog({
       </DialogTrigger>
       <DialogContent className="max-w-md p-6 bg-background text-foreground">
         <DialogHeader>
-          <DialogTitle>Transaction details</DialogTitle>
+          <DialogTitle>Action details</DialogTitle>
           <DialogDescription>A summary of what happened.</DialogDescription>
         </DialogHeader>
           <div className="space-y-4 mt-4 text-sm">

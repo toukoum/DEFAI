@@ -1,15 +1,17 @@
 
 <h1 align="center">
-  Hackathon ETHOXFORD
+  Hackathon ETHOXFORD 2025
 </h1>
 
 # Requisites ⚙️
 
 To use the web interface, these requisites must be met:
 
-1. Download [Ollama](https://ollama.com/download) and have it running. Or run it in a Docker container. Check the [docs](https://github.com/ollama/ollama) for instructions.
-2. Node.js (18+) and npm is required. [Download](https://nodejs.org/en/download)
+1. Node.js (18+) and npm is required. [Download](https://nodejs.org/en/download)
 
+[OPTIONAL] if you want to run the model locally, otherwise you'll need an OPENAI API key:
+
+2.  Download [Ollama](https://ollama.com/download) and have it running. Or run it in a Docker container. Check the [docs](https://github.com/ollama/ollama) for instructions.
 ## Quick start 🚀
 
 **1. Clone the repository to a directory on your pc via command prompt:**

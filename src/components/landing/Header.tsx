@@ -71,7 +71,7 @@ const Header = () => {
 							Connected
 						</div>
 					)}
-					<ConnectButton label="Try" accountStatus="avatar" showBalance={false} />
+					<ConnectButton label="Connect" accountStatus="avatar" showBalance={false} />
 				</div>
 			</div>
 		</header>
