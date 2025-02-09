@@ -253,8 +253,9 @@ function ChatMessage({
 										address: getTokenAvax("USDC", CHAIN_ID).address as Address,
 										abi: abiApprouve,
 										functionName: "approve",
-										args: [router, parseUnits(amount, getTokenAvax("USDC", CHAIN_ID).decimals)],
+										args: [router, typedValueParsed],
 									});
+
 									// Wait for the approval to be confirmed.
 									await publicClient.waitForTransactionReceipt({ hash: approvalTx });
 
@@ -272,7 +273,7 @@ function ChatMessage({
 									const bestTrade = TradeV2.chooseBestTrade(validTrades, true); // isExactIn = true
 									if (!bestTrade) throw new Error("No valid trade found");
 
-									// 7. Get fee details.
+									// // 7. Get fee details.
 									const { totalFeePct, feeAmountIn } = await bestTrade.getTradeFee();
 									const userSlippageTolerance = new Percent("200", "10000");
 									const swapOptions: TradeOptions = {
@@ -282,7 +283,7 @@ function ChatMessage({
 										feeOnTransfer: false,
 									};
 
-									// 8. Prepare swap call parameters.
+									// // 8. Prepare swap call parameters.
 									const { methodName, args, value } = bestTrade.swapCallParameters(swapOptions);
 
 									// 9. Execute the swap.
@@ -294,10 +295,11 @@ function ChatMessage({
 										args: args,
 										account: address,
 									});
-									// Wait for swap tx confirmation.
+									// // Wait for swap tx confirmation.
 									await publicClient.waitForTransactionReceipt({ hash: swapTx });
 
 									// 10. Return all relevant info.
+									// return `Swap executed successfully!`;
 									return `Swap executed successfully!
 												Transaction hash: ${swapTx}
 												Fee: ${feeAmountIn.toSignificant(6)} ${feeAmountIn.token.symbol} (Total fee: ${totalFeePct.toSignificant(6)}%)`;
