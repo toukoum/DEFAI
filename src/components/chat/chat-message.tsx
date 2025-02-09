@@ -4,7 +4,7 @@ import { Message } from "ai/react";
 import { motion } from "framer-motion";
 import { RefreshCcw } from "lucide-react";
 import Image from "next/image";
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import ButtonWithTooltip from "../button-with-tooltip";
@@ -16,17 +16,9 @@ import {
 	ChatBubbleMessage,
 } from "../ui/chat/chat-bubble";
 import { ConfirmationDialog } from "../ui/ConfirmationDialog";
-import {Address} from "viem";
+import { Address } from "viem";
 
 // shadcn Dialog imports
-import {
-	Dialog,
-	DialogTrigger,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
-} from "@/components/ui/dialog";
 import { useAccount, useBalance, useSendTransaction, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import ToolExecutor from "./ToolExecutor";
 import { createPublicClient, http, parseEther, parseUnits } from "viem";
@@ -48,6 +40,7 @@ import {
 } from "@traderjoe-xyz/sdk-v2";
 
 import { avalancheFuji } from "viem/chains";
+import SendResultDialog from "./SendResultDialog";
 
 export type ChatMessageProps = {
 	message: Message;
@@ -73,71 +66,16 @@ const MOTION_CONFIG = {
 
 // --------------- HELPER COMPONENTS ---------------
 
-// A simple placeholder for the steps in progress
-function SendInProgressCard() {
-	return (
-		<div className="border w-full border-border p-4 my-4 rounded-md shadow-sm">
-			<p className="font-semibold text-sm mb-2">Send in progress</p>
-			<ul className="text-xs list-disc ml-4 space-y-1">
-				<li>Preparing transaction...</li>
-				<li>Awaiting signature...</li>
-				<li>Broadcasting transaction...</li>
-			</ul>
-		</div>
-	);
-}
-
-// A dialog to show final results or extra details
-function SendResultDialog({
-	open,
-	onOpenChange,
-	result, // the final result (string)
-}: {
-	open: boolean;
-	onOpenChange: (val: boolean) => void;
-	result: string;
-}) {
-	return (
-		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogTrigger asChild>
-				<Button variant="outline" size="sm">
-					Show details
-				</Button>
-			</DialogTrigger>
-			<DialogContent className="max-w-md p-6">
-				<DialogHeader>
-					<DialogTitle>Transaction details</DialogTitle>
-					<DialogDescription>A summary of what happened.</DialogDescription>
-				</DialogHeader>
-				<div className="mt-4 space-y-2 text-sm">
-					{/*ToDO*/}
-					<p><strong>Result:</strong> {result}</p>
-					{/* If result is a transaction hash, you can link to an explorer, e.g.: 
-              <a href={`https://snowtrace.io/tx/${result}`} target="_blank" rel="noreferrer">
-                View on Snowtrace
-              </a>
-          */}
-				</div>
-				<div className="mt-6 flex justify-end">
-					<Button variant="secondary" onClick={() => onOpenChange(false)}>
-						Close
-					</Button>
-				</div>
-			</DialogContent>
-		</Dialog>
-	);
-}
-
 // The final card once the send is complete
 //TODO A AMELIORER
-function SendCompleteCard({ result }: { result: string }) {
+function SendCompleteCard({ result, action }: { result: string, action: string }) {
 	const [dialogOpen, setDialogOpen] = useState(false);
 
 	return (
-		<div className="border w-full border-border p-4 my-4 rounded-md shadow-sm">
-			<p className="font-semibold text-sm mb-2">Send complete</p>
-			<p className="text-xs">Your transaction was processed successfully.</p>
-			<div className="mt-2">
+		<div className="border w-full border-border p-4 mb-8 rounded-md shadow-sm">
+			<p className="font-semibold text-sm mb-2">{action} complete</p>
+			<p className="text-xs">Your {action} was processed successfully.</p>
+			<div className="mt-6">
 				<SendResultDialog open={dialogOpen} onOpenChange={setDialogOpen} result={result} />
 			</div>
 		</div>
@@ -199,11 +137,17 @@ function ChatMessage({
 
 	const { data: dataSwap, writeContractAsync } = useWriteContract();
 
+	
 	const renderToolInvocations = () => {
+
 		if (!message.toolInvocations) return null;
+
+		console.log("===> message.toolInvocations", message.toolInvocations);
 
 		return message.toolInvocations.map((toolInvocation: ToolInvocation) => {
 			const { toolCallId, toolName } = toolInvocation;
+
+
 			const confirmResult = (result: string) => {
 				if (!addToolResult) return;
 				addToolResult({ toolCallId, result });
@@ -226,7 +170,14 @@ function ChatMessage({
 										to,
 										value: parseEther(amount.toString()),
 									});
-									return `Transaction sent! ${amount} AVAX to ${to}, hash: ${hash}, explorer link: https://testnet.snowtrace.io/tx/${hash}`;
+									return JSON.stringify({
+										message: "Transaction sent!",
+										amount: `${amount} AVAX`,
+										from: address,
+										to,
+										hash,
+										explorerLink: `https://testnet.snowtrace.io/tx/${hash}`
+									});
 								} catch (error) {
 									console.error("Transaction cancelled or error:", error);
 									// Retourne un message qui indique l'annulation ou l'erreur
@@ -240,14 +191,17 @@ function ChatMessage({
 					// Afficher un message d'annulation plutôt que la SendCompleteCard
 					return (
 						<div key={toolCallId} className="mt-2">
-							<p>Transaction was cancelled.</p>
+							<div className="border w-full border-border p-4 mb-8 rounded-md shadow-sm">
+								<p className="font-semibold text-sm mb-2">Transaction Cancelled</p>
+								<p className="text-xs">The transaction was cancelled.</p>
+							</div>
 						</div>
 					);
 				}
 
 				return (
 					<div key={toolCallId} className="mt-2">
-						<SendCompleteCard result={toolInvocation.result as string} />
+						<SendCompleteCard result={toolInvocation.result as string} action="Send" />
 					</div>
 				);
 			}
@@ -360,7 +314,10 @@ function ChatMessage({
 				if (toolInvocation.result === "Transaction cancelled.") {
 					return (
 						<div key={toolCallId} className="mt-2">
-							<p>Transaction was cancelled.</p>
+							<div className="border w-full border-border p-4 mb-8 rounded-md shadow-sm">
+								<p className="font-semibold text-sm mb-2">Transaction Cancelled</p>
+								<p className="text-xs">The transaction was cancelled.</p>
+							</div>
 						</div>
 					);
 				}
@@ -368,7 +325,7 @@ function ChatMessage({
 				// Otherwise, display the final card with result details.
 				return (
 					<div key={toolCallId} className="mt-2">
-						<SendCompleteCard result={toolInvocation.result as string} />
+						<SendCompleteCard result={toolInvocation.result as string} action="Swap" />
 					</div>
 				);
 			}
@@ -377,6 +334,7 @@ function ChatMessage({
 
 			// askForConfirmation
 			if (toolName === "askForConfirmation") {
+
 				const { actionType, message, destination, amount, tokenName } = toolInvocation.args;
 				const parameters = {
 					destination,
@@ -386,7 +344,10 @@ function ChatMessage({
 				if ("result" in toolInvocation) {
 					return (
 						<div key={toolCallId} className="mt-2">
-							<strong>Confirmation Given:</strong> {toolInvocation.result}
+							<div className="border w-full border-border p-4 mb-3 rounded-md shadow-sm">
+								<p className="font-semibold text-sm mb-2">Confirmation Given</p>
+								<p className="text-xs">{toolInvocation.result}</p>
+							</div>
 						</div>
 					);
 				}
@@ -399,6 +360,8 @@ function ChatMessage({
 							parameters={parameters}
 							onConfirm={() => confirmResult("Yes")}
 							onCancel={() => confirmResult("No")}
+							toolCallId={toolCallId}
+							addToolResult={addToolResult}
 						/>
 					</div>
 				);
@@ -415,14 +378,18 @@ function ChatMessage({
 							executeTool={async () => {
 								// Here you can perform your async operation.
 								// For example, using useBalance data (make sure it's defined and fetched):
-								return dataBalance.data?.value?.toString() || "0";
+								return JSON.stringify({
+									"balance": dataBalance.data?.value?.toString() || "0",
+									"address": address,
+									"chainId": 43113,
+								});
 							}}
 						/>
 					);
 				}
 
 				return (
-					<SendCompleteCard result={toolInvocation.result as string} />
+					<SendCompleteCard result={toolInvocation.result as string} action="Get Balance" />
 				);
 			}
 

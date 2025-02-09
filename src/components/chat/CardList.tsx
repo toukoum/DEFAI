@@ -18,16 +18,16 @@ export default function CardList() {
   ];
 
   return (
-    <div className="w-full text-avax grid grid-cols-2 gap-4 mt-4">
+    <div className="w-full text-avax grid grid-cols-2 gap-4 mt-20">
       {cards.map((text, index) => (
         <Card key={index} className="bg-background border">
           <CardContent className="p-4 text-sm flex justify-between items-center">
-            <p className="font-medium text-muted-foreground">{text}</p>
+            <p className="font-medium text-card-foreground">{text}</p>
             <button
               onClick={() => copyToClipboard(text)}
               className="hover:opacity-80 transition"
             >
-              <Copy className="h-4 w-4 text-muted-foreground" />
+              <Copy className="h-4 w-4 text-card-foreground" />
             </button>
           </CardContent>
         </Card>

@@ -29,8 +29,8 @@ export default function LandingPage() {
 	const [hasLoaded, setHasLoaded] = useState(false);
 
 	useEffect(() => {
-    setHasLoaded(true);
-  }, []);
+		setHasLoaded(true);
+	}, []);
 
 	useEffect(() => {
 		if (isConnected && chainId !== avalancheFuji.id) {
@@ -40,7 +40,7 @@ export default function LandingPage() {
 
 	return (
 		<div className="container min-h-screen flex flex-col items-center text-foreground">
-			<LampContainer className="px-6 pt-44">
+			<LampContainer className="px-6 pt-48">
 				<motion.h1
 					initial={{ opacity: 0, y: 50 }}
 					animate={hasLoaded ? { opacity: 1, y: 0 } : {}}
@@ -49,7 +49,7 @@ export default function LandingPage() {
 						duration: 0.8,
 						ease: "easeInOut",
 					}}
-					className="bg-gradient-to-t pb-4 z-40 from-red-50 to-white bg-clip-text text-transparent text-4xl font-medium tracking-tight md:text-7xl text-center leading-[1.2]"
+					className="bg-gradient-to-t pb-4 z-40 font-bold from-neutral-400 to-neutral-100  bg-clip-text text-transparent text-4xl tracking-tight md:text-7xl text-center leading-[1.2]"
 				>
 					Talk with your money
 				</motion.h1>
@@ -69,6 +69,7 @@ export default function LandingPage() {
 								router.push("/home");
 							}}
 							disabled={isLoading}
+							className="rounded-full"
 						>
 							Start
 							{isLoading && <Loader2 className="animate-spin ml-2 w-4 h-4" />}
@@ -95,8 +96,8 @@ export default function LandingPage() {
 					<Textarea
 						autoComplete="off"
 						name="message"
-						className="pointer-events-none shadow-2xl bg-accent resize-none text-avax text-bold text-xl px-4 py-3 placeholder:text-foreground disabled:opacity-50 w-full rounded-md"
-						placeholder="Swap 100 USDT to AVAX..."
+						className="pointer-events-none shadow-2xl bg-accent resize-none text-avax text-bold text-xl px-4 py-6 placeholder:text-zinc-100 disabled:opacity-50 w-full rounded-md"
+						placeholder="Swap 100 USDC to AVAX..."
 					/>
 				</div>
 
@@ -111,6 +112,11 @@ export default function LandingPage() {
 				</div>
 			</LampContainer>
 
+			<div className="container items-center max-w-lg text-center flex flex-col w-full mt-24 mb-48">
+				<p className="relative -mb-2 z-20 bg-gradient-to-b from-neutral-200 to-neutral-500 bg-clip-text py-8 text-4xl font-bold text-transparent sm:text-7xl">Defai</p>
+				<p className="text-base text-foreground">Decentralized Finance Artificial Intelligence</p>
+			</div>
+
 
 			<div className="justify-center mb-36 container w-full px-24 items-center flex flex-col">
 				{/*<div className="w-full h-0.5 bg-accent my-8 z-40"></div>*/}
@@ -123,7 +129,7 @@ export default function LandingPage() {
 						<AccordionContent>
 							<p className="text-base text-muted-foreground mt-2">
 								We build AI agents that streamline <strong>DeFi operations and cross-chain interactions</strong>
-								 via natural language interfaces on <strong>Avalanche</strong>. Instead of manually juggling
+								via natural language interfaces on <strong>Avalanche</strong>. Instead of manually juggling
 								complex protocols, our agent helps you perform trades, swaps, and more with simple commands.
 							</p>
 						</AccordionContent>
